@@ -10,7 +10,6 @@ import { ReactComponent as GithubLogo } from "./About/svg/github.svg";
 
 let Wrapper = styled.div`
   padding: 30px 40px 30px 40px;
-  user-select: none;
   float: left;
   width: 100%;
 `;
@@ -23,11 +22,14 @@ let Text = styled.div`
   ) => (props.fontSize ? `font-size: ${props.fontSize}px;` : "")}
   ${(props) =>
     props.center ? `text-align: center;` : ""}
-    ${(
-      props
-    ) => (props.lineHeight ? `line-height: ${props.lineHeight}px;` : "")}
+    ${(props) =>
+    props.lineHeight
+      ? `line-height: ${props.lineHeight}px;`
+      : ""}
     float: left;
   width: 100%;
+  ${(props) => (props.textSelect ? "" : " user-select: none;")}
+
   strong {
     font-weight: 500;
   }
@@ -35,7 +37,7 @@ let Text = styled.div`
 let SignatureWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin: 17px 0 30px;
+  margin: 17px 0 25px;
 `;
 let LinksWrapper = styled.div`
   display: flex;
@@ -85,14 +87,17 @@ let Resume = ({ openFile, viewport }) => {
       <Text marginBottom={1} fontSize={27} center>
         <strong>Kuurse</strong>
       </Text>
-      <Text marginBottom={25} center>
+      <Text marginBottom={1} center textSelect>
+        lucas.kurse@hotmail.com
+      </Text>
+      <Text marginBottom={15} center>
         Illustrator / developer / designer
       </Text>
       <Text marginBottom={18} center>
         Welcome to my operating system, project that I am coding with a mission
         to merge all kind of stuff that i want just in one place.
       </Text>
-      <Text marginBottom={25} center>
+      <Text marginBottom={15} center>
         <strong>Please be free to explore everything.</strong>
       </Text>
       <LinksWrapper>

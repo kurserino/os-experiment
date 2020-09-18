@@ -24,21 +24,23 @@ import { ReactComponent as GodotLogo } from "./Resume/svg/godot.svg";
 
 let Wrapper = styled.div`
   padding: 30px 40px 30px 40px;
-  user-select: none;
+  
   float: left;
   width: 100%;
 `;
 let Text = styled.div`
-  ${(props) =>
-    props.marginTop ? `margin-top: ${props.marginTop}px;` : ""}
+  ${(props) => (props.marginTop ? `margin-top: ${props.marginTop}px;` : "")}
   ${(props) =>
     props.marginBottom ? `margin-bottom: ${props.marginBottom}px;` : ""}
-  ${(props) =>
+  ${(
+    props
+  ) =>
     props.fontSize ? `font-size: ${props.fontSize}px;` : ""}
 
     float: left;
-    width: 100%;
-    strong {
+  width: 100%;
+  ${(props) => (props.textSelect ? "" : " user-select: none;")}
+  strong {
     font-weight: 500;
   }
 `;
@@ -56,12 +58,13 @@ let Skill = styled.div`
 let Resume = (props) => {
   return (
     <Wrapper>
-      <Text marginBottom={1} fontSize={22}>
+      <Text marginBottom={6} fontSize={22}>
         <strong>Kuurse</strong>
       </Text>
       <Text>Lucas Ruivo Maturo</Text>
       <Text>Curitiba, PR - Brazil</Text>
-      <Text marginBottom={30}>Illustrator / developer / designer</Text>
+      <Text>Illustrator / developer / designer</Text>
+      <Text marginBottom={30} textSelect>lucas.kurse@hotmail.com</Text>
       <Text marginBottom={10}>
         <strong>WORK EXPERIENCE</strong>
       </Text>
@@ -121,7 +124,7 @@ let Resume = (props) => {
         </Tooltip>
       </Skill>
 
-      <Skill marginTop={-4} translateY={3} >
+      <Skill marginTop={-4} translateY={3}>
         <Tooltip
           title="NodeJS"
           animation="none"
@@ -315,8 +318,6 @@ let Resume = (props) => {
           <GodotLogo height={45} />
         </Tooltip>
       </Skill>
-
-
     </Wrapper>
   );
 };
