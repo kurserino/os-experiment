@@ -63,8 +63,8 @@ let Resume = (props) => {
       </Text>
       <Text>Lucas Ruivo Maturo</Text>
       <Text>Curitiba, PR - Brazil</Text>
-      <Text>Illustrator / developer / designer</Text>
-      <Text marginBottom={30} textSelect>lucas.kurse@hotmail.com</Text>
+      <Text textSelect>lucas.kurse@hotmail.com</Text>
+      <Text marginBottom={30}>+55 41 98742-9292</Text>
       <Text marginBottom={10}>
         <strong>WORK EXPERIENCE</strong>
       </Text>
