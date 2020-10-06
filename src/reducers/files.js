@@ -11,7 +11,7 @@ const files = [
       x: 1081,
       y: 73,
     },
-    zIndex: 26,
+    zIndex: 27,
     icon: "images/icons/folder.svg",
     isSelected: false,
     isClicked: false,
@@ -141,7 +141,7 @@ const files = [
         x: null,
         y: null,
       },
-      zIndex: 3,
+      zIndex: 2,
       width: 550,
       height: 510,
       bg: "#2a2926",
@@ -389,7 +389,7 @@ const files = [
       x: 335,
       y: 328,
     },
-    zIndex: 25,
+    zIndex: 26,
     icon: "images/sketches/girl.jpg",
     isSelected: false,
     data: {
@@ -467,7 +467,7 @@ const files = [
       x: 507,
       y: 325,
     },
-    zIndex: 23,
+    zIndex: 24,
     icon: "images/sketches/pattern_girl.jpg",
     isSelected: false,
     data: {
@@ -506,7 +506,7 @@ const files = [
       x: 601,
       y: 322,
     },
-    zIndex: 24,
+    zIndex: 25,
     icon: "images/sketches/sketch_empty_eyes.jpg",
     isSelected: false,
     data: {
@@ -533,6 +533,45 @@ const files = [
     },
     isClicked: false,
   },
+  // {
+  //   id: 25,
+  //   name: "Snake",
+  //   pos: {
+  //     x: 15,
+  //     y: 249,
+  //   },
+  //   isDragging: false,
+  //   dragging: {
+  //     x: 1388,
+  //     y: 286,
+  //   },
+  //   zIndex: 29,
+  //   icon: "images/icons/file.svg",
+  //   isSelected: false,
+  //   isClicked: false,
+  //   data: {
+  //     src: "/games/snake",
+  //   },
+  //   folder: 0,
+  //   hidden: false,
+  //   window: {
+  //     title: null,
+  //     app: "Iframe",
+  //     isDragging: false,
+  //     dragging: {
+  //       x: 0,
+  //       y: 0,
+  //     },
+  //     pos: {
+  //       x: null,
+  //       y: null,
+  //     },
+  //     width: 611,
+  //     height: 647,
+  //     zIndex: 1,
+  //     bg: "#2a2926",
+  //   },
+  // },
   {
     id: 100,
     name: "beetle.png",
@@ -768,7 +807,7 @@ const files = [
     isClicked: false,
   },
   {
-    id: 105,
+    id: 111,
     name: "hypnosis.png",
     pos: {
       x: 15,

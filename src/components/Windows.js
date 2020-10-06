@@ -6,7 +6,7 @@ let Windows = ({ windows }) => {
   return (
     <>
       {windows.map((_file, _index) => (
-        <Window key={_index} file={_file} />
+        <Window key={_file.id} file={_file} />
       ))}
     </>
   );

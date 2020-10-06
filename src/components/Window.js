@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { connect } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import WindowDraggableBar from "./Window/WindowDraggableBar";
@@ -61,8 +61,15 @@ let WindowTitle = ({ title }) => {
 
 let Window = ({ file, viewport, setWindowTop }) => {
   const isSmallerScreen = viewport.x < 710;
+  let contentRef = useRef();
   let mouseDownHandler = (e) => {
     setWindowTop(file.id);
+  };
+  let mouseUpHandler = (e) => {
+    if (file.window && file.window.app === "Iframe") {
+      let iframeRef = contentRef;
+      iframeRef.current.focus();
+    }
   };
 
   // Initial pos
@@ -79,7 +86,7 @@ let Window = ({ file, viewport, setWindowTop }) => {
       let x = (viewport.x - width) / 2;
       let y = (viewport.y - height) / 2;
       if (isSmallerScreen) {
-        let spacing = (viewport.y - height - 110)
+        let spacing = viewport.y - height - 110;
         y = spacing < 33 ? 33 : spacing / 2 + 33;
       }
       return { x, y };
@@ -90,6 +97,7 @@ let Window = ({ file, viewport, setWindowTop }) => {
     <WindowWrapper
       pos={file.window.pos}
       onMouseDown={mouseDownHandler}
+      onMouseUp={mouseUpHandler}
       zIndex={file.window.zIndex}
     >
       <StyledWindow
@@ -113,16 +121,16 @@ let Window = ({ file, viewport, setWindowTop }) => {
             />
           </WindowDraggableBar>
         </WindowDraggableBarWrapper>
-        <WindowContent file={file} />
+        <WindowContent file={file} contentRef={contentRef} />
       </StyledWindow>
     </WindowWrapper>
   );
 };
 
 const mapStateToProps = (state) => ({
-  windows: state.windows,
   cursor: state.cursor,
   viewport: state.viewport,
+  windows: state.windows,
 });
 
 const mapDispatchToProps = (dispatch) => ({

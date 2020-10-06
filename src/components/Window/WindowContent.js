@@ -9,6 +9,7 @@ import Gallery from "../Gallery";
 import ImageViewer from "../ImageViewer";
 import MusicPlayer from "../MusicPlayer";
 import TextEdit from "../TextEdit";
+import Iframe from "../Iframe";
 
 let StyledWindowContent = styled.div`
   float: left;
@@ -38,7 +39,7 @@ let StyledWindowContent = styled.div`
   }
 `;
 
-let WindowContent = ({ file, files, children }) => {
+let WindowContent = ({ file, files, children, contentRef }) => {
   useEffect(() => {
     console.log("WindowContent Mounting...");
 
@@ -56,6 +57,7 @@ let WindowContent = ({ file, files, children }) => {
     ImageViewer: ImageViewer,
     MusicPlayer: MusicPlayer,
     TextEdit: TextEdit,
+    Iframe: Iframe,
   };
 
   const WindowContentApp = apps[file.window.app]
@@ -64,7 +66,7 @@ let WindowContent = ({ file, files, children }) => {
 
   return (
     <StyledWindowContent>
-      <WindowContentApp file={file} />
+      <WindowContentApp file={file} contentRef={contentRef}/>
       {children}
     </StyledWindowContent>
   );

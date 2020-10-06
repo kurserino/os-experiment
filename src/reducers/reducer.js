@@ -19,7 +19,7 @@ const defaultState = {
 };
 
 const reducer = (state = defaultState, action) => {
-  var windows, files;
+  var windows, files, sortingRef;
   switch (action.type) {
     case "SET_CURSOR":
       windows = [...state.windows].map((_file) => {
@@ -136,16 +136,17 @@ const reducer = (state = defaultState, action) => {
         files,
       };
     case "SET_WINDOW_DRAGGING":
+      sortingRef = [...state.windows].sort((a, b) => {
+        if (a.window.zIndex > b.window.zIndex) return 1;
+        if (b.window.zIndex > a.window.zIndex) return -1;
+        return 0;
+      });
       return {
         ...state,
         windows: [...state.windows]
-          .sort((a, b) => {
-            if (a.window.zIndex > b.window.zIndex) return 1;
-            if (b.window.zIndex > a.window.zIndex) return -1;
-            return 0;
-          })
           .map((_file, i) => {
-            _file.window.zIndex = i + 1;
+            _file.window.zIndex =
+              sortingRef.findIndex((_ref) => _ref.id === _file.id) + 1;
             _file.window.isDragging = false;
             if (action.payload.isDragging && _file.id === action.payload.id) {
               _file.window.isDragging = true;
@@ -159,19 +160,20 @@ const reducer = (state = defaultState, action) => {
           }),
       };
     case "SET_WINDOW_TOP":
-      windows = [...state.windows]
-        .sort((a, b) => {
-          if (a.window.zIndex > b.window.zIndex) return 1;
-          if (b.window.zIndex > a.window.zIndex) return -1;
-          return 0;
-        })
-        .map((_file, i) => {
-          _file.window.zIndex = i + 1;
-          if (_file.id === action.payload.id) {
-            _file.window.zIndex = state.windows.length + 1;
-          }
-          return _file;
-        });
+      sortingRef = [...state.windows].sort((a, b) => {
+        if (a.window.zIndex > b.window.zIndex) return 1;
+        if (b.window.zIndex > a.window.zIndex) return -1;
+        return 0;
+      });
+      windows = [...state.windows].map((_file, i) => {
+        _file.window.zIndex =
+          sortingRef.findIndex((_ref) => _ref.id === _file.id) + 1;
+
+        if (_file.id === action.payload.id) {
+          _file.window.zIndex = state.windows.length + 2;
+        }
+        return _file;
+      });
       return {
         ...state,
         windows,
@@ -207,23 +209,29 @@ const reducer = (state = defaultState, action) => {
       var isFileOpen = windows.find((_file) => _file.id === file.id);
 
       if (!isFileOpen && file.window) {
-        file.window.zIndex = windows.length + 1;
+        // file.window.zIndex = windows.length + 1;
+        let higherZindex = state.windows.length ? Math.max.apply(
+          Math,
+          state.windows.map((o) => o.window.zIndex)
+        ) : 0;
+        file.window.zIndex = higherZindex + 1;
         windows.push(file);
       } else {
         // Move opened window to top
-        windows = windows
-          .sort((a, b) => {
-            if (a.window.zIndex > b.window.zIndex) return 1;
-            if (b.window.zIndex > a.window.zIndex) return -1;
-            return 0;
-          })
-          .map((_file, i) => {
-            _file.window.zIndex = i + 1;
-            if (_file.id === file.id) {
-              _file.window.zIndex = state.windows.length + 1;
-            }
-            return _file;
-          });
+        sortingRef = [...state.windows].sort((a, b) => {
+          if (a.window.zIndex > b.window.zIndex) return 1;
+          if (b.window.zIndex > a.window.zIndex) return -1;
+          return 0;
+        });
+        windows = windows.map((_file, i) => {
+          // _file.window.zIndex = i + 1;
+          _file.window.zIndex =
+            sortingRef.findIndex((_ref) => _ref.id === _file.id) + 1;
+          if (_file.id === file.id) {
+            _file.window.zIndex = state.windows.length + 1;
+          }
+          return _file;
+        });
       }
 
       // Deselect opened file
