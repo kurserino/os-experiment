@@ -69,15 +69,10 @@ let Resume = (props) => {
         <strong>WORK EXPERIENCE</strong>
       </Text>
       <Text marginBottom={3}>
-        <strong>JUL 2018 ~ SEP 2020</strong> - Frontend Developer - Octo
-        Commerce
+        <strong>AUG 2017 ~ OCT 2020</strong> - Frontend Developer - OctoXB
       </Text>
       <Text marginBottom={3}>
-        <strong>AUG 2017 ~ JUN 2018</strong> - Frontend Developer - Global Full
-        Commerce
-      </Text>
-      <Text marginBottom={3}>
-        <strong>SEP 2014 ~ JUL 2017</strong> - Web Designer - Agência Magento
+        <strong>SEP 2014 ~ JUL 2017</strong> - Frontend Developer - Agência Magento
       </Text>
       <Text marginBottom={3}>
         <strong>OCT 2013 ~ AUG 2014</strong> - Designer - Agência Saru
