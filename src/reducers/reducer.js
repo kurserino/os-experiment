@@ -1,4 +1,5 @@
 import files from "./files";
+import axios from "axios";
 
 const defaultState = {
   cursor: {
@@ -15,6 +16,7 @@ const defaultState = {
   dockIconWidth: 60,
   menuBarItemOpened: null,
   windows: [],
+  gallery: [],
   files,
 };
 
@@ -143,21 +145,20 @@ const reducer = (state = defaultState, action) => {
       });
       return {
         ...state,
-        windows: [...state.windows]
-          .map((_file, i) => {
-            _file.window.zIndex =
-              sortingRef.findIndex((_ref) => _ref.id === _file.id) + 1;
-            _file.window.isDragging = false;
-            if (action.payload.isDragging && _file.id === action.payload.id) {
-              _file.window.isDragging = true;
-              _file.window.zIndex = state.windows.length + 1;
-              _file.window.dragging = {
-                x: action.payload.dragging.x,
-                y: action.payload.dragging.y,
-              };
-            }
-            return _file;
-          }),
+        windows: [...state.windows].map((_file, i) => {
+          _file.window.zIndex =
+            sortingRef.findIndex((_ref) => _ref.id === _file.id) + 1;
+          _file.window.isDragging = false;
+          if (action.payload.isDragging && _file.id === action.payload.id) {
+            _file.window.isDragging = true;
+            _file.window.zIndex = state.windows.length + 1;
+            _file.window.dragging = {
+              x: action.payload.dragging.x,
+              y: action.payload.dragging.y,
+            };
+          }
+          return _file;
+        }),
       };
     case "SET_WINDOW_TOP":
       sortingRef = [...state.windows].sort((a, b) => {
@@ -210,10 +211,12 @@ const reducer = (state = defaultState, action) => {
 
       if (!isFileOpen && file.window) {
         // file.window.zIndex = windows.length + 1;
-        let higherZindex = state.windows.length ? Math.max.apply(
-          Math,
-          state.windows.map((o) => o.window.zIndex)
-        ) : 0;
+        let higherZindex = state.windows.length
+          ? Math.max.apply(
+              Math,
+              state.windows.map((o) => o.window.zIndex)
+            )
+          : 0;
         file.window.zIndex = higherZindex + 1;
         windows.push(file);
       } else {
@@ -289,9 +292,31 @@ const reducer = (state = defaultState, action) => {
         ...state,
         clockTime: action.payload,
       };
+
+    case "GALLERY_FETCHING":
+      return { ...state, galleryFetching: true };
+
+    case "GALLERY_SUCCESS":
+      return {
+        ...state,
+        galleryFetching: false,
+        gallery: action.payload,
+      };
+      
+    case "GALLERY_ERROR":
+      return { ...state, galleryFetching: false };
     default:
       return state;
   }
 };
+
+export function fetchGalleryFromAPI() {
+  return function(dispatch) {
+    return axios.get('/api/gallery')
+      .then(({ data }) => {
+      dispatch({ type: 'GALLERY_SUCCESS', payload: data.files });
+    });
+  };
+}
 
 export default reducer;

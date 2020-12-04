@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { connect } from "react-redux";
+import axios from "axios";
+import { createAction } from "redux-actions";
+import { fetchGalleryFromAPI } from "../reducers/reducer";
 
 let UiHelper = ({
   setCursor,
@@ -9,6 +12,7 @@ let UiHelper = ({
   openFile,
   setClockTime,
   closeMenuBarItem,
+  fetchGallery,
 }) => {
   // Cursor position
   useEffect(() => {
@@ -47,6 +51,9 @@ let UiHelper = ({
     var clockTicker = setInterval(() => {
       setClockTime(new Date().getTime());
     }, 1000);
+
+    // Fetch gallery
+    fetchGallery();
 
     return () => {
       // Unmounting
@@ -116,6 +123,9 @@ const mapDispatchToProps = (dispatch) => ({
       type: "SET_CLOCK_TIME",
       payload: ts,
     });
+  },
+  fetchGallery: () => {
+    dispatch(fetchGalleryFromAPI());
   },
 });
 

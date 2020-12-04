@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import Masonry from "react-masonry-css";
@@ -50,7 +50,10 @@ let Illustration = ({ file, openFile }) => {
   return <StyledIllustration src={file.data.src} onClick={clickHandler} />;
 };
 
-let Gallery = ({ illustrations, openFile }) => {
+let Gallery = ({ gallery, illustrations, openFile }) => {
+  useEffect(() => {
+    // console.log(gallery)
+  }, [])
   return (
     <Wrapper>
       <MasonryWrapper>
@@ -69,6 +72,7 @@ let Gallery = ({ illustrations, openFile }) => {
 };
 
 const mapStateToProps = (state) => ({
+  gallery: state.gallery,
   illustrations: state.files
     .filter((_file) => _file.folder === 7)
     .sort((a, b) => a.id - b.id),
