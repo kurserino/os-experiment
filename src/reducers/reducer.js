@@ -301,7 +301,7 @@ const reducer = (state = defaultState, action) => {
           .map((_file, i) => {
             _file.zIndex = i + 1;
             _file.isDragging = false;
-            if (action.payload.isDragging && _file.id === action.payload.id) {
+            if (action.payload.isDragging && action.payload.ids.includes(_file.id)) {
               _file.isDragging = true;
               _file.zIndex = state.files.length + 1;
               _file.dragging = {

@@ -5,7 +5,11 @@ import { Tooltip } from "react-tippy";
 
 let StyledIconWrapper = styled.div`
   background: ${(props) =>
-    props.isSelected && !props.isDock ? props.isFolder ? "#333333cc" : "#3333335c" : "transparent"};
+    props.isSelected && !props.isDock
+      ? props.isFolder
+        ? "#333333cc"
+        : "#3333335c"
+      : "transparent"};
   width: ${(props) => props.width}px;
   height: ${(props) => props.width}px;
   border-radius: 5px;
@@ -29,8 +33,7 @@ let StyledFileIconWrapper = styled.div.attrs((props) => ({
       : ``,
   },
 }))`
-  position: ${(props) =>
-    props.isDock ? "initial" : "absolute"};
+  position: ${(props) => (props.isDock ? "initial" : "absolute")};
   width: ${(props) => props.width}px;
   display: flex;
   flex-direction: column;
@@ -43,7 +46,12 @@ let StyledFileName = styled.div`
   color: ${(props) => (props.isSelected ? "#fff" : "#fff")};
   text-shadow: 0 0.02rem 2px #000000a8;
   letter-spacing: 0.02rem;
-  background: ${(props) => (props.isSelected ? props.isFolder ? "#333333cc" : "#3333335c" : "transparent")};
+  background: ${(props) =>
+    props.isSelected
+      ? props.isFolder
+        ? "#333333cc"
+        : "#3333335c"
+      : "transparent"};
   margin: 2px -10px 0 -10px;
   padding: 4px;
   text-align: center;
@@ -56,11 +64,14 @@ let StyledFileName = styled.div`
 `;
 
 let FileIcon = ({
+  files,
   file,
   viewport,
   iconWidth,
   dockIconWidth,
   selectSingleFile,
+  selectFile,
+  deselectFile,
   clickFile,
   openFile,
   setDragging,
@@ -70,11 +81,21 @@ let FileIcon = ({
   let mouseDownHandler = (e) => {
     let isLeftButton = e.button === 0;
     if (isLeftButton && !isDock) {
-      selectSingleFile(file.id);
-      setDragging(file.id, {
-        x: e.clientX,
-        y: e.clientY,
+      if (!file.isSelected) {
+        e.shiftKey ? selectFile(file.id) : selectSingleFile(file.id);
+      } else if(e.shiftKey){
+        deselectFile(file.id)
+      }
+      var selectedFiles = [...files].filter((_file) => {
+        return _file.isSelected && !_file.hidden && _file.folder == file.folder;
       });
+      setDragging(
+        selectedFiles.map((_file) => _file.id),
+        {
+          x: e.clientX,
+          y: e.clientY,
+        }
+      );
     }
   };
 
@@ -121,10 +142,7 @@ let FileIcon = ({
         isDock={isDock}
         isFolder={isFolder}
       >
-        <StyledIcon
-          isSelected={file.isSelected}
-          iconUrl={file.icon}
-        />
+        <StyledIcon isSelected={file.isSelected} iconUrl={file.icon} />
       </StyledIconWrapper>
 
       {!isDock && (
@@ -169,6 +187,22 @@ const mapDispatchToProps = (dispatch) => ({
       },
     });
   },
+  selectFile: (id) => {
+    dispatch({
+      type: "SELECT_FILE",
+      payload: {
+        id,
+      },
+    });
+  },
+  deselectFile: (id) => {
+    dispatch({
+      type: "DESELECT_FILE",
+      payload: {
+        id,
+      },
+    });
+  },
   clickFile: (id) => {
     dispatch({
       type: "CLICK_FILE",
@@ -185,10 +219,10 @@ const mapDispatchToProps = (dispatch) => ({
       },
     });
   },
-  setDragging: (id, dragging) => {
+  setDragging: (ids, dragging) => {
     dispatch({
       type: "SET_FILE_DRAGGING",
-      payload: { id, dragging, isDragging: true },
+      payload: { ids, dragging, isDragging: true },
     });
   },
 });
