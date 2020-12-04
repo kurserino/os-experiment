@@ -18,6 +18,8 @@ const defaultState = {
   windows: [],
   gallery: [],
   files,
+  isDragSelect: false,
+  dragSelect: { x: 0, y: 0 },
 };
 
 const reducer = (state = defaultState, action) => {
@@ -136,6 +138,7 @@ const reducer = (state = defaultState, action) => {
         ...state,
         windows,
         files,
+        isDragSelect: false,
       };
     case "SET_WINDOW_DRAGGING":
       sortingRef = [...state.windows].sort((a, b) => {
@@ -179,11 +182,33 @@ const reducer = (state = defaultState, action) => {
         ...state,
         windows,
       };
-    case "SELECT_FILE":
+    case "SELECT_SINGLE_FILE":
       files = [...state.files].map((_file) => {
         _file.isSelected = false;
         if (_file.id === action.payload.id) {
           _file.isSelected = new Date().getTime();
+        }
+        return _file;
+      });
+      return {
+        ...state,
+        files,
+      };
+    case "SELECT_FILE":
+      files = [...state.files].map((_file) => {
+        if (_file.id === action.payload.id) {
+          _file.isSelected = new Date().getTime();
+        }
+        return _file;
+      });
+      return {
+        ...state,
+        files,
+      };
+    case "DESELECT_FILE":
+      files = [...state.files].map((_file) => {
+        if (_file.id === action.payload.id) {
+          _file.isSelected = false;
         }
         return _file;
       });
@@ -302,19 +327,22 @@ const reducer = (state = defaultState, action) => {
         galleryFetching: false,
         gallery: action.payload,
       };
-      
+
     case "GALLERY_ERROR":
       return { ...state, galleryFetching: false };
+
+    case "START_DRAG_SELECT":
+      return { ...state, isDragSelect: true, dragSelect: action.payload };
+
     default:
       return state;
   }
 };
 
 export function fetchGalleryFromAPI() {
-  return function(dispatch) {
-    return axios.get('/api/gallery')
-      .then(({ data }) => {
-      dispatch({ type: 'GALLERY_SUCCESS', payload: data.files });
+  return function (dispatch) {
+    return axios.get("/api/gallery").then(({ data }) => {
+      dispatch({ type: "GALLERY_SUCCESS", payload: data.files });
     });
   };
 }

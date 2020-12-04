@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { connect } from "react-redux";
-import axios from "axios";
-import { createAction } from "redux-actions";
 import { fetchGalleryFromAPI } from "../reducers/reducer";
 
 let UiHelper = ({
@@ -13,11 +11,37 @@ let UiHelper = ({
   setClockTime,
   closeMenuBarItem,
   fetchGallery,
+  wallpaperRef,
+  startDragSelect,
+  isDragSelect,
+  dragSelect,
+  viewport,
+  files,
+  selectFile,
+  deselectFile,
+  iconWidth,
 }) => {
   // Cursor position
   useEffect(() => {
     console.log("UI HELPER MOUNTED");
-    // Mounted
+
+    // Initial set viewport
+    setViewport({ x: window.innerWidth, y: window.innerHeight });
+
+    // Initial opened windows
+    switch (window.location.pathname) {
+      case "/resume": {
+        // Resume
+        openFile(18);
+        break;
+      }
+      default: {
+        // About
+        openFile(4);
+        break;
+      }
+    }
+
     let mouseDownHandler = (e) => {
       document.body.addEventListener("mousemove", mouseMoveHandler);
       // Deselect files
@@ -65,27 +89,84 @@ let UiHelper = ({
       window.removeEventListener("resize", windowResizeHandler);
       clearInterval(clockTicker);
     };
-  });
+  }, []);
 
-  // Initial set viewport
-  setViewport({ x: window.innerWidth, y: window.innerHeight });
+  // Detect overlaping when drag selecting
+  useEffect(() => {
+    if (isDragSelect) {
+      var detectOverlapOnMoveHandler = (e) => {
+        var desktopFiles = [...files].filter((_file) => {
+          return _file.folder == 0 && !_file.hidden;
+        });
+        desktopFiles.map((_file) => {
+          // Detect if file pos overlap drag select box
+          let posX = viewport.x - _file.pos.x - iconWidth / 2;
+          let posY = _file.pos.y + iconWidth / 2;
 
-  // Initial opened windows
-  switch (window.location.pathname) {
-    case "/resume": {
-      // Resume
-      openFile(18);
-      break;
+          var isOverlapX = () => {
+            // Moving cursor to right
+            if(e.clientX > dragSelect.x){
+              return posX > dragSelect.x - iconWidth &&
+                posX < e.clientX
+            }else{
+              return posX < dragSelect.x - iconWidth &&
+                posX > e.clientX
+            }
+          }
+
+          var isOverlapY = () => {
+            if(e.clientY > dragSelect.y){
+              return posY > dragSelect.y - iconWidth &&
+                posY < e.clientY
+            }else{
+              return posY < dragSelect.y - iconWidth &&
+                posY > e.clientY
+            }
+          }
+
+          if (
+            isOverlapX() 
+            && isOverlapY()
+          )
+            selectFile(_file.id);
+          else deselectFile(_file.id);
+        });
+      };
+      document.body.addEventListener("mousemove", detectOverlapOnMoveHandler);
+
+      return () =>
+        document.body.removeEventListener(
+          "mousemove",
+          detectOverlapOnMoveHandler
+        );
     }
-    default: {
-      // About
-      openFile(4);
-      break;
-    }
-  }
+  }, [isDragSelect]);
+
+  // Background mouse select drag
+  useEffect(() => {
+    var mouseDownHandler = (e) => {
+      setCursor({
+        x: e.clientX,
+        y: e.clientY,
+      });
+      startDragSelect({ x: e.clientX, y: e.clientY });
+    };
+    wallpaperRef.current.addEventListener("mousedown", mouseDownHandler);
+    return () => {
+      wallpaperRef.current.removeEventListener("mousedown", mouseDownHandler);
+    };
+  }, [wallpaperRef]);
 
   return null;
 };
+
+const mapStateToProps = (state) => ({
+  viewport: state.viewport,
+  files: state.files,
+  isDragSelect: state.isDragSelect,
+  dragSelect: state.dragSelect,
+  iconWidth: state.iconWidth,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   setCursor: (pos) => {
@@ -127,6 +208,28 @@ const mapDispatchToProps = (dispatch) => ({
   fetchGallery: () => {
     dispatch(fetchGalleryFromAPI());
   },
+  startDragSelect: (pos) => {
+    dispatch({
+      type: "START_DRAG_SELECT",
+      payload: pos,
+    });
+  },
+  selectFile: (id) => {
+    dispatch({
+      type: "SELECT_FILE",
+      payload: {
+        id,
+      },
+    });
+  },
+  deselectFile: (id) => {
+    dispatch({
+      type: "DESELECT_FILE",
+      payload: {
+        id,
+      },
+    });
+  },
 });
 
-export default connect(null, mapDispatchToProps)(UiHelper);
+export default connect(mapStateToProps, mapDispatchToProps)(UiHelper);

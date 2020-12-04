@@ -60,7 +60,7 @@ let FileIcon = ({
   viewport,
   iconWidth,
   dockIconWidth,
-  selectFile,
+  selectSingleFile,
   clickFile,
   openFile,
   setDragging,
@@ -70,7 +70,7 @@ let FileIcon = ({
   let mouseDownHandler = (e) => {
     let isLeftButton = e.button === 0;
     if (isLeftButton && !isDock) {
-      selectFile(file.id);
+      selectSingleFile(file.id);
       setDragging(file.id, {
         x: e.clientX,
         y: e.clientY,
@@ -161,9 +161,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  selectFile: (id) => {
+  selectSingleFile: (id) => {
     dispatch({
-      type: "SELECT_FILE",
+      type: "SELECT_SINGLE_FILE",
       payload: {
         id,
       },

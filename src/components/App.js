@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef } from "react";
 import { createGlobalStyle } from "styled-components";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import Windows from "./Windows";
@@ -34,6 +34,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+  const wallpaperRef = createRef();
   return (
     <HelmetProvider>
       <Helmet>
@@ -45,12 +46,12 @@ function App() {
         />
       </Helmet>
       <GlobalStyle />
-      <UiHelper />
+      <UiHelper wallpaperRef={wallpaperRef} />
       {/* <FPSStats bottom={10} left={10} top={"auto"} /> */}
       <MenuBar />
       <Dock />
       <Windows />
-      <Desktop />
+      <Desktop wallpaperRef={wallpaperRef} />
     </HelmetProvider>
   );
 }
